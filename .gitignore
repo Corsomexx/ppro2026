@@ -1,0 +1,24 @@
+# IDE and Editor files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Build results and dependencies
+bin/
+obj/
+dist/
+build/
+node_modules/
+target/
+*.log
+
+# Docker
+.env.local
