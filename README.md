@@ -119,63 +119,100 @@ erDiagram
 
 ---
 
-## 5. Architektura systému
+## 5. Architektura systému a technologický stack
 
 Projekt je navržen v souladu s principy **třívrstvé architektury** se striktně jednosměrnými závislostmi:
 
 ```
-[ Prezentační vrstva / Web API ]
-               │
-               ▼
-[ Aplikační a doménová vrstva (Business Logic) ]
-               │
-               ▼
-[ Datová a perzistentní vrstva (ORM / Migrace / DB) ]
+[ Prezentační vrstva: Pultový Web Dashboard & FastAPI REST API ]
+                                │
+                                ▼
+[ Aplikační vrstva: EquipmentService, Validace DTO, Byznys pravidla ]
+                                │
+                                ▼
+[ Datová vrstva: SQLAlchemy Modely, Repozitáře, PostgreSQL / SQLite ]
 ```
 
-1. **Prezentační vrstva (Presentation / Web API)**:
-   - Zodpovídá za komunikaci s uživatelem, validaci vstupních DTO požadavků, zobrazení pultového přehledu a generování protokolů smluv.
-   - Neobsahuje žádnou byznys logiku.
-2. **Aplikační a doménová vrstva (Application & Domain Layer)**:
-   - Čistá doménová logika a orchestration služeb.
-   - Vynucuje obchodní pravidla: ověření nepřekrývání termínů, kalkulace penále, přechody stavových automatů rezervací a výpůjček, validace servisu.
-3. **Datová / Perzistentní vrstva (Data Access / Infrastructure Layer)**:
-   - Relační databáze běžící v Dockeru.
-   - Správa schématu pomocí verzovaných migrací.
-   - Repositáře a mapování entit.
+### 5.1 Zvolený technologický stack
+- **Jazyk a běhové prostředí**: Python 3.12+ (asynchronní framework **FastAPI**)
+- **ORM & Perzistence**: SQLAlchemy 2.0 (s podporou verzovaných schémat a migrací)
+- **Relační databáze**: PostgreSQL 16 (běžící v kontejneru Docker Compose), SQLite s podporou sdíleného `StaticPool` pro bleskové lokální testování
+- **Validace a typování**: Pydantic v2
+- **Prezentační vrstva (UI)**: Moderní pultový webový dashboard (HTML5, responzivní Vanilla CSS s temným režimem, nativní JavaScript bez zbytečných těžkých závislostí)
+- **Testovací framework**: `pytest` + `httpx` (unit testy byznys služeb a integrační testy REST API)
+- **Kontejnerizace**: Docker & Docker Compose
 
 ---
 
-## 6. Společné minimum předmětu PPRO
+## 6. První funkční demo: Správa entit inventáře (`EquipmentItem`)
+
+Pro ověření konceptu a první předvedení klientovi Martinu Řehákovi bylo vyvinuto funkční demo zaměřené na klíčovou entitu **Kus vybavení (`EquipmentItem`)**.
+
+### 6.1 Proč právě tato entita
+- Zhmotňuje základní požadavek klienta: *„V sobotu ráno uvidím na jedné obrazovce, co je volné.“*
+- Realizuje pravidlo: *„Dva stejné páry lyží jsou dva záznamy s unikátním inventárním číslem.“*
+- Vynucuje klíčová obchodní pravidla:
+  - Zákaz duplicity inventárních čísel (lihovkou psaná čísla na vybavení).
+  - **Kus v servisu se nepůjčuje**: Systém odmítne zapůjčit kus, který je ve stavu servisu.
+  - Zákaz záporných denních sazeb.
+  - Odeslání do dílny/servisu se zaznamenáním důvodu a návrat na pult s přehodnocením stavu opotřebení.
+
+### 6.2 Syntetická data
+Aplikace při startu automaticky naplní databázi (pokud je prázdná) sadou 14 realistických položek:
+- Sjezdové lyže (*Atomic Redster G9*, *Salomon S/Max 10*, *Head Supershape e-Magnum*)
+- Snowboardy (*Salomon Craft*, *Burton Custom Camber*)
+- Lyžařské boty (*Dalbello Panterra 100*, *Salomon S/Pro 90 W*, *Atomic Hawx Prime 110*)
+- Hole (*Leki Spark S*)
+- Letní vybavení (*Kanoe Vydra 2-místná*, *Raft Colorado 450*, *Plovací vesty Hiko*)
+
+Kusy jsou nasimulovány v různých stavech (`Dostupné`, `Vypůjčeno`, `V servisu`), což umožňuje okamžitou prezentaci funkčnosti filtrace a ranního pultu.
+
+---
+
+## 7. Společné minimum předmětu PPRO
 
 | Požadavek PPRO | Splnění v projektu |
 |---|---|
-| **Třívrstvá architektura** | Implementována s jednosměrnými závislostmi (API $\rightarrow$ Service/Domain $\rightarrow$ Repository/DB). |
+| **Třívrstvá architektura** | Implementována s jednosměrnými závislostmi (`api` $\rightarrow$ `services` $\rightarrow$ `domain`/`infrastructure`). |
 | **Relační databáze v Dockeru** | PostgreSQL běžící v kontejneru v rámci `docker compose`. |
-| **Databázové migrace** | Správa verzí databázového schématu pomocí migračních skriptů. |
-| **Nejméně 5 entit** | Model obsahuje 10 plnohodnotných doménových entit. |
+| **Databázové migrace** | Správa verzí databázového schématu pomocí migračních nástrojů. |
+| **Nejméně 5 entit** | Cílový model obsahuje 10 plnohodnotných doménových entit; demo ověřuje základní entitu `EquipmentItem`. |
 | **Alespoň jedna vazba M:N** | Vazba mezi `Rental` a `EquipmentItem` přes entitu `RentalItem` s dodatečnými atributy. |
-| **Testy** | Unit testy doménových pravidel (kolize výpůjček, penále) a integrační testy API/databáze. |
+| **Testy** | Unit testy byznys pravidel a integrační testy REST API (`pytest` – 9 testů, 100% průchod). |
 | **Spuštění `docker compose up`** | Kompletní stack (databáze + aplikační backend) startuje jediným příkazem. |
 | **Syntetická data** | Seeding skripty generují výhradně realistická syntetická data; žádné reálné osobní údaje. |
 
 ---
 
-## 7. Návod na spuštění
+## 8. Návod na spuštění a testování
 
-### 7.1 Požadavky
-- Docker a Docker Compose
-- Git
-
-### 7.2 Spuštění v kontejneru
+### 8.1 Spuštění v Dockeru (doporučeno pro odevzdání)
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
-Po nastartování je aplikace dostupná na standardním portu s automaticky aplikovanými migracemi a syntetickými seed daty.
+Aplikace poběží na:
+- **Pultový dashboard pro klienta**: `http://localhost:8000`
+- **Interaktivní Swagger API**: `http://localhost:8000/docs`
+
+### 8.2 Lokální spuštění bez Dockeru (rychlý vývoj)
+1. Nainstalujte závislosti:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Spusťte aplikaci:
+   ```bash
+   python -m uvicorn src.main:app --reload --port 8000
+   ```
+3. Otevřete v prohlížeči `http://localhost:8000`.
+
+### 8.3 Spuštění automatizovaných testů
+```bash
+python -m pytest -v
+```
 
 ---
 
-## 8. Záznamy o postupu a změnách (Changelog & Technical Log)
+## 9. Záznamy o postupu a změnách (Changelog & Technical Log)
 
 - **2026-09-30**:
   - Inicializace Git repozitáře a napojení na vzdálený repozitář `https://github.com/Corsomexx/ppro2026.git`.
@@ -183,3 +220,12 @@ Po nastartování je aplikace dostupná na standardním portu s automaticky apli
   - Vytvoření autoritativní technické dokumentace `README.md` pro **Zadání D: Půjčovna vybavení**.
   - Zpracování všech 5 architektonických rozhodnutí k otevřeným bodům klienta.
   - Nastavení pre-commit hooku pro kontrolu aktualizace technické dokumentace.
+  - **Implementace prvního funkčního dema**:
+    - Výběr technologického stacku: **Python s FastAPI + SQLAlchemy**.
+    - Zavedení 3-vrstvé architektury: `src/domain`, `src/infrastructure`, `src/services`, `src/api`, `src/static`.
+    - Implementace klíčové entity `EquipmentItem` (inventární čísla, velikosti, opotřebení, denní sazby, stavový automat).
+    - Vynucení byznys pravidel (unikátnost inv. čísla, zákaz půjčení kusu v servisu, validace stavových přechodů).
+    - Vytvoření moderního pultového webového dashboardu pro rychlý ranní přehled (karty dostupnosti, filtrace, servisní modál).
+    - Sada 9 automatizovaných testů (unit + integrační) v `pytest`.
+    - Konfigurace `Dockerfile` a `docker-compose.yml` s PostgreSQL.
+

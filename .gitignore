@@ -20,5 +20,22 @@ node_modules/
 target/
 *.log
 
-# Docker
+# Python & testing
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Docker & local configs
+.env
 .env.local
+
