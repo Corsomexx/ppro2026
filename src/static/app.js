@@ -6,9 +6,44 @@ let currentStatus = "";
 
 // Inicializace po načtení DOM
 document.addEventListener("DOMContentLoaded", () => {
+  setupTheme();
   setupEventListeners();
   loadDashboardData();
 });
+
+// Správa Dark / Light režimu
+function setupTheme() {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  applyTheme(savedTheme);
+
+  const themeToggle = document.getElementById("theme-toggle");
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(nextTheme);
+    });
+  }
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+
+  const sunIcon = document.getElementById("theme-icon-sun");
+  const moonIcon = document.getElementById("theme-icon-moon");
+  const themeText = document.getElementById("theme-toggle-text");
+
+  if (theme === "light") {
+    if (sunIcon) sunIcon.style.display = "none";
+    if (moonIcon) moonIcon.style.display = "inline-block";
+    if (themeText) themeText.textContent = "Tmavý režim";
+  } else {
+    if (sunIcon) sunIcon.style.display = "inline-block";
+    if (moonIcon) moonIcon.style.display = "none";
+    if (themeText) themeText.textContent = "Světlý režim";
+  }
+}
 
 function setupEventListeners() {
   // Vyhledávání s debounce
@@ -144,7 +179,7 @@ function renderEquipmentTable(items) {
           <td><strong>${item.daily_rate.toFixed(0)} Kč</strong> / den</td>
           <td>${statusBadge}</td>
           <td>
-            <div style="display: flex; gap: 0.4rem; align-items: center;">
+            <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
               ${actionButtons}
             </div>
           </td>
@@ -157,40 +192,55 @@ function renderEquipmentTable(items) {
 function getStatusBadge(status) {
   switch (status) {
     case "Dostupné":
-      return '<span class="badge badge-avail">● Volné na pultu</span>';
+      return '<span class="badge badge-avail">Volné na pultu</span>';
     case "Vypůjčeno":
-      return '<span class="badge badge-rented">● U zákazníka</span>';
+      return '<span class="badge badge-rented">U zákazníka</span>';
     case "V servisu":
-      return '<span class="badge badge-service">● V dílně / servisu</span>';
+      return '<span class="badge badge-service">V dílně / servisu</span>';
     case "Vyřazeno":
-      return '<span class="badge badge-retired">● Vyřazeno</span>';
+      return '<span class="badge badge-retired">Vyřazeno</span>';
     default:
       return `<span class="badge">${escapeHtml(status)}</span>`;
   }
 }
 
+// Vektorové SVG ikony (standard IconsRoom.com) pro akční tlačítka bez emoji
 function getActionButtons(item) {
   let buttons = "";
 
   if (item.status === "Dostupné") {
     buttons += `
-      <button class="btn btn-secondary btn-sm" onclick="openServiceModal(${item.id}, 'send')" title="Odeslat na servis">
-        🔧 Servis
+      <button class="btn btn-secondary btn-sm" onclick="openServiceModal(${item.id}, 'send')" title="Odeslat do servisu">
+        <svg class="icon icon-xs" viewBox="0 0 24 24">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <span>Servis</span>
       </button>
       <button class="btn btn-secondary btn-sm" onclick="toggleRent(${item.id}, 'Vypůjčeno')" title="Půjčit zákazníkovi">
-        🎿 Půjčit
+        <svg class="icon icon-xs" viewBox="0 0 24 24">
+          <path d="M7 17l9.2-9.2M17 17V7H7"/>
+        </svg>
+        <span>Půjčit</span>
       </button>
     `;
   } else if (item.status === "V servisu") {
     buttons += `
       <button class="btn btn-primary btn-sm" onclick="openServiceModal(${item.id}, 'return')" title="Vrátit ze servisu">
-        ✅ Ukončit servis
+        <svg class="icon icon-xs" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span>Ukončit servis</span>
       </button>
     `;
   } else if (item.status === "Vypůjčeno") {
     buttons += `
       <button class="btn btn-secondary btn-sm" onclick="toggleRent(${item.id}, 'Dostupné')" title="Vrátit na pult">
-        📥 Vrátit
+        <svg class="icon icon-xs" viewBox="0 0 24 24">
+          <polyline points="9 10 4 15 9 20"/>
+          <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
+        </svg>
+        <span>Vrátit</span>
       </button>
     `;
   }
@@ -342,12 +392,26 @@ function closeModal(id) {
   document.getElementById(id).classList.remove("active");
 }
 
+// Zobrazení toastu s vektorovou SVG ikonou bez emoji
 function showToast(message, type = "success") {
   const container = document.getElementById("toast-container");
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
+
+  const iconSvg =
+    type === "success"
+      ? `<svg class="icon icon-sm" style="color: var(--accent-emerald);" viewBox="0 0 24 24">
+           <circle cx="12" cy="12" r="10"/>
+           <path d="m9 12 2 2 4-4"/>
+         </svg>`
+      : `<svg class="icon icon-sm" style="color: var(--accent-rose);" viewBox="0 0 24 24">
+           <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+           <line x1="12" y1="9" x2="12" y2="13"/>
+           <line x1="12" y1="17" x2="12.01" y2="17"/>
+         </svg>`;
+
   toast.innerHTML = `
-    <span>${type === "success" ? "✓" : "⚠️"}</span>
+    <span>${iconSvg}</span>
     <div>${escapeHtml(message)}</div>
   `;
   container.appendChild(toast);
