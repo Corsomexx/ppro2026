@@ -139,7 +139,7 @@ Projekt je navržen v souladu s principy **třívrstvé architektury** se strikt
 - **Relační databáze**: PostgreSQL 16 (běžící v kontejneru Docker Compose), SQLite s podporou sdíleného `StaticPool` pro bleskové lokální testování
 - **Validace a typování**: Pydantic v2
 - **Prezentační vrstva (UI)**: Moderní pultový webový dashboard (HTML5, responzivní Vanilla CSS, nativní JavaScript)
-- **Vizuální styl a ikony**: Místo emoji se v celém rozhraní využívají standardizované vektorové SVG ikony dle specifikace a katalogu [IconsRoom](https://iconsroom.com/) (`stroke`-based SVG prvky s podporou `currentColor` a konzistentním zobrazením).
+- **Vizuální styl**: Čistý, minimalistický design bez jakýchkoliv ikonek a emoji – rozhraní sází na jasnou textovou hierarchii, čistou typografii a barevné stavové indikátory pro maximální přehlednost na pultu.
 - **Motivy rozhraní**: Plná podpora přepínání mezi **Dark módem** a **Light módem** s okamžitou perzistencí uživatelské volby v `localStorage`.
 - **Testovací framework**: `pytest` + `httpx` (unit testy byznys služeb a integrační testy REST API)
 - **Kontejnerizace**: Docker & Docker Compose
@@ -219,12 +219,13 @@ python -m pytest -v
 - **2026-10-07**:
   - Vyřešení spouštění Uvicornu a konfigurace běhového prostředí Python pro Windows / Bash.
   - Vytvoření spouštěcích skriptů `run.sh` (pro bash/Git Bash) a `run.bat` (pro Windows CMD).
-  - **Vizuální refaktoring rozhraní dle specifikace [IconsRoom](https://iconsroom.com/)**:
-    - Kompletní odstranění emoji ze všech tlačítek, stavových karet, pultového dashboardu i notifikačních toastů.
-    - Nasazení standardních vektorových SVG ikon (tlačítka Swagger API, Zaevidovat kus, Obnovit data, karty inventáře a akce v tabulce).
+  - **Minimalistický vizuální refaktoring rozhraní**:
+    - Kompletní odstranění všech ikonek i emoji z celého projektu (tlačítka, stavové karty, pultový dashboard, notifikace i dialogy).
+    - Rozhraní převedeno na čistý, profesionální textový design s akcentními barevnými liniemi pro stavy inventáře.
   - **Implementace Light módu**:
     - Vytvořen kompletní světlý vizuální motiv (`[data-theme="light"]`) v CSS design systému.
     - Přidán přepínač Dark/Light módu na horní liště s ukládáním do `localStorage`.
+
 
 - **2026-09-30**:
   - Inicializace Git repozitáře a napojení na vzdálený repozitář `https://github.com/Corsomexx/ppro2026.git`.

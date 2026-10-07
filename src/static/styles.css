@@ -83,34 +83,6 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* SVG ikony standard IconsRoom.com */
-.icon {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-
-.icon-xs {
-  width: 14px;
-  height: 14px;
-}
-
-.icon-sm {
-  width: 16px;
-  height: 16px;
-}
-
-.icon-lg {
-  width: 24px;
-  height: 24px;
-}
-
 header {
   background: var(--header-bg);
   backdrop-filter: blur(12px);
@@ -118,7 +90,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  padding: 1rem 2rem;
+  padding: 1.1rem 2rem;
   transition: background 0.25s ease, border-color 0.25s ease;
 }
 
@@ -128,37 +100,24 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-.logo-icon {
-  width: 44px;
-  height: 44px;
-  background: linear-gradient(135deg, #0284c7, #38bdf8);
-  color: #ffffff;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
 }
 
 .brand-text h1 {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
 .brand-text p {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
@@ -172,8 +131,8 @@ header {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.1rem;
+  justify-content: center;
+  padding: 0.6rem 1.15rem;
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: var(--radius-md);
@@ -187,7 +146,7 @@ header {
 .btn-primary {
   background: linear-gradient(135deg, #0284c7, #0ea5e9);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
 }
 
 .btn-primary:hover {
@@ -218,14 +177,8 @@ header {
 }
 
 .btn-sm {
-  padding: 0.35rem 0.65rem;
+  padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
-  gap: 0.35rem;
-}
-
-.btn-icon-only {
-  padding: 0.6rem;
-  justify-content: center;
 }
 
 main {
@@ -236,7 +189,7 @@ main {
   flex: 1;
 }
 
-/* Stat Cards (Sobota ráno) */
+/* Stat Cards (Sobota ráno) - Čistý minimalistický styl s horní akcentní linkou */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -248,13 +201,15 @@ main {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 1.4rem 1.5rem;
   box-shadow: var(--shadow-card);
   transition: var(--transition);
 }
+
+.card-total { border-top: 3px solid var(--text-muted); }
+.card-avail { border-top: 3px solid var(--accent-emerald); }
+.card-rent { border-top: 3px solid var(--accent-blue); }
+.card-serv { border-top: 3px solid var(--accent-amber); }
 
 .metric-card:hover {
   border-color: var(--border-color-hover);
@@ -263,43 +218,18 @@ main {
 
 .metric-info p {
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .metric-info h3 {
-  font-size: 1.85rem;
+  font-size: 2.1rem;
   font-weight: 700;
+  line-height: 1.2;
   color: var(--text-primary);
-}
-
-.metric-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-total .metric-icon { 
-  background: var(--card-total-bg); 
-  color: var(--card-total-color); 
-}
-.card-avail .metric-icon { 
-  background: var(--accent-emerald-bg); 
-  color: var(--accent-emerald); 
-}
-.card-rent .metric-icon { 
-  background: var(--accent-blue-bg); 
-  color: var(--accent-blue); 
-}
-.card-serv .metric-icon { 
-  background: var(--accent-amber-bg); 
-  color: var(--accent-amber); 
 }
 
 /* Filter Bar */
@@ -323,12 +253,11 @@ main {
 .search-box {
   flex: 1;
   min-width: 280px;
-  position: relative;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.65rem 1rem 0.65rem 2.6rem;
+  padding: 0.65rem 1rem;
   background: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -341,18 +270,6 @@ main {
 .search-input:focus {
   border-color: var(--accent-blue);
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-}
-
-.search-icon {
-  position: absolute;
-  left: 0.85rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .dropdown-filters {
@@ -425,7 +342,6 @@ tr:hover td {
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
   padding: 0.25rem 0.65rem;
   border-radius: 9999px;
   font-size: 0.78rem;
@@ -575,8 +491,7 @@ tr:hover td {
   box-shadow: var(--shadow-card);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 280px;
+  min-width: 260px;
   animation: slideIn 0.3s ease;
 }
 
