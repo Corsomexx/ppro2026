@@ -222,9 +222,11 @@ python -m pytest -v
   - **Minimalistický vizuální refaktoring rozhraní**:
     - Kompletní odstranění všech ikonek i emoji z celého projektu (tlačítka, stavové karty, pultový dashboard, notifikace i dialogy).
     - Rozhraní převedeno na čistý, profesionální textový design s akcentními barevnými liniemi pro stavy inventáře.
-  - **Implementace Light módu**:
-    - Vytvořen kompletní světlý vizuální motiv (`[data-theme="light"]`) v CSS design systému.
-    - Přidán přepínač Dark/Light módu na horní liště s ukládáním do `localStorage`.
+  - **Implementace Light módu a oprava mezipaměti prohlížeče**:
+    - Vytvořen kompletní světlý vizuální motiv (`[data-theme="light"]`) v CSS design systému s vysokým kontrastem.
+    - Přidán funkční přepínač Dark/Light módu na horní liště s okamžitou perzistencí volby v `localStorage`.
+    - Zavedeno no-cache middleware v FastAPI a cache-busting verzování statických assetů (`?v=2`) pro zamezení servírování starých verzí JS/CSS v klientském prohlížeči.
+    - Sjednoceny čisté textové popisky tlačítek v tabulce: *Servis*, *Vypůjčit*, *Ukončit servis*, *Vrátit*.
 
 
 - **2026-09-30**:

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/styles.css?v=2">
 </head>
 <body>
 
@@ -23,7 +23,7 @@
       </div>
       <div class="header-actions">
         <!-- Přepínač Dark / Light módu -->
-        <button id="theme-toggle" class="btn btn-secondary" title="Přepnout tmavý / světlý motiv" aria-label="Přepnout motiv">
+        <button id="theme-toggle" class="btn btn-secondary" type="button" title="Přepnout tmavý / světlý motiv" aria-label="Přepnout motiv">
           <span id="theme-toggle-text">Světlý režim</span>
         </button>
 
@@ -31,7 +31,7 @@
           <span>Swagger API</span>
         </a>
 
-        <button id="btn-add-item" class="btn btn-primary" title="Zaevidovat nový inventární kus">
+        <button id="btn-add-item" class="btn btn-primary" type="button" title="Zaevidovat nový inventární kus">
           <span>Zaevidovat kus</span>
         </button>
       </div>
@@ -98,7 +98,7 @@
             <option value="Vyřazeno">Vyřazeno</option>
           </select>
 
-          <button id="btn-refresh" class="btn btn-secondary" title="Obnovit data" aria-label="Obnovit data">
+          <button id="btn-refresh" class="btn btn-secondary" type="button" title="Obnovit data" aria-label="Obnovit data">
             Obnovit
           </button>
         </div>
@@ -244,6 +244,6 @@
     <p>Projekt PPRO 2026/2027 | Zadání D: Půjčovna vybavení | FIM UHK</p>
   </footer>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=2"></script>
 </body>
 </html>

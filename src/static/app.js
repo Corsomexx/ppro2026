@@ -4,12 +4,18 @@ let currentSearch = "";
 let currentCategory = "";
 let currentStatus = "";
 
-// Inicializace po načtení DOM
-document.addEventListener("DOMContentLoaded", () => {
+// Inicializace okamžitě i po načtení DOM
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
+
+function initApp() {
   setupTheme();
   setupEventListeners();
   loadDashboardData();
-});
+}
 
 // Správa Dark / Light režimu
 function setupTheme() {
@@ -18,16 +24,33 @@ function setupTheme() {
 
   const themeToggle = document.getElementById("theme-toggle");
   if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    themeToggle.onclick = function (e) {
+      e.preventDefault();
+      const currentTheme =
+        document.documentElement.getAttribute("data-theme") || "dark";
       const nextTheme = currentTheme === "dark" ? "light" : "dark";
       applyTheme(nextTheme);
-    });
+    };
   }
 }
 
 function applyTheme(theme) {
+  // Nastavení atributů a tříd na html i body pro maximální spolehlivost
   document.documentElement.setAttribute("data-theme", theme);
+  document.body.setAttribute("data-theme", theme);
+
+  if (theme === "light") {
+    document.documentElement.classList.add("theme-light");
+    document.documentElement.classList.remove("theme-dark");
+    document.body.classList.add("theme-light");
+    document.body.classList.remove("theme-dark");
+  } else {
+    document.documentElement.classList.add("theme-dark");
+    document.documentElement.classList.remove("theme-light");
+    document.body.classList.add("theme-dark");
+    document.body.classList.remove("theme-light");
+  }
+
   localStorage.setItem("theme", theme);
 
   const themeText = document.getElementById("theme-toggle-text");
@@ -40,34 +63,48 @@ function setupEventListeners() {
   // Vyhledávání s debounce
   const searchInput = document.getElementById("search-input");
   let searchTimeout;
-  searchInput.addEventListener("input", (e) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      currentSearch = e.target.value.trim();
-      loadEquipment();
-    }, 250);
-  });
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentSearch = e.target.value.trim();
+        loadEquipment();
+      }, 250);
+    });
+  }
 
   // Filtry
-  document.getElementById("filter-category").addEventListener("change", (e) => {
-    currentCategory = e.target.value;
-    loadEquipment();
-  });
+  const filterCat = document.getElementById("filter-category");
+  if (filterCat) {
+    filterCat.addEventListener("change", (e) => {
+      currentCategory = e.target.value;
+      loadEquipment();
+    });
+  }
 
-  document.getElementById("filter-status").addEventListener("change", (e) => {
-    currentStatus = e.target.value;
-    loadEquipment();
-  });
+  const filterStat = document.getElementById("filter-status");
+  if (filterStat) {
+    filterStat.addEventListener("change", (e) => {
+      currentStatus = e.target.value;
+      loadEquipment();
+    });
+  }
 
-  document.getElementById("btn-refresh").addEventListener("click", () => {
-    loadDashboardData();
-    showToast("Data byla obnovena", "success");
-  });
+  const btnRefresh = document.getElementById("btn-refresh");
+  if (btnRefresh) {
+    btnRefresh.addEventListener("click", () => {
+      loadDashboardData();
+      showToast("Data byla obnovena", "success");
+    });
+  }
 
   // Modály - otevření / zavření
-  document.getElementById("btn-add-item").addEventListener("click", () => {
-    openModal("modal-add");
-  });
+  const btnAdd = document.getElementById("btn-add-item");
+  if (btnAdd) {
+    btnAdd.addEventListener("click", () => {
+      openModal("modal-add");
+    });
+  }
 
   document.querySelectorAll(".close-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -84,10 +121,16 @@ function setupEventListeners() {
   });
 
   // Formulář: Zaevidovat kus
-  document.getElementById("form-add-item").addEventListener("submit", handleAddItem);
+  const formAdd = document.getElementById("form-add-item");
+  if (formAdd) {
+    formAdd.addEventListener("submit", handleAddItem);
+  }
 
   // Formulář: Servis
-  document.getElementById("form-service").addEventListener("submit", handleServiceSubmit);
+  const formService = document.getElementById("form-service");
+  if (formService) {
+    formService.addEventListener("submit", handleServiceSubmit);
+  }
 }
 
 // Načtení dat dashboardu
@@ -112,7 +155,8 @@ async function loadSummaryMetrics() {
 
 async function loadEquipment() {
   const tbody = document.getElementById("equipment-table-body");
-  
+  if (!tbody) return;
+
   try {
     const params = new URLSearchParams();
     if (currentStatus) params.append("status", currentStatus);
@@ -138,6 +182,7 @@ async function loadEquipment() {
 
 function renderEquipmentTable(items) {
   const tbody = document.getElementById("equipment-table-body");
+  if (!tbody) return;
 
   if (!items || items.length === 0) {
     tbody.innerHTML = `
@@ -204,8 +249,8 @@ function getActionButtons(item) {
       <button class="btn btn-secondary btn-sm" onclick="openServiceModal(${item.id}, 'send')" title="Odeslat do servisu">
         Servis
       </button>
-      <button class="btn btn-secondary btn-sm" onclick="toggleRent(${item.id}, 'Vypůjčeno')" title="Půjčit zákazníkovi">
-        Půjčit
+      <button class="btn btn-secondary btn-sm" onclick="toggleRent(${item.id}, 'Vypůjčeno')" title="Zapůjčit zákazníkovi">
+        Vypůjčit
       </button>
     `;
   } else if (item.status === "V servisu") {
@@ -362,16 +407,20 @@ async function handleServiceSubmit(e) {
 
 // Helpers
 function openModal(id) {
-  document.getElementById(id).classList.add("active");
+  const el = document.getElementById(id);
+  if (el) el.classList.add("active");
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.remove("active");
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("active");
 }
 
 // Zobrazení toastu s čistým textem bez ikon
 function showToast(message, type = "success") {
   const container = document.getElementById("toast-container");
+  if (!container) return;
+
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerHTML = `<div>${escapeHtml(message)}</div>`;
