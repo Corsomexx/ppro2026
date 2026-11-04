@@ -148,9 +148,13 @@ Projekt je navržen v souladu s principy **třívrstvé architektury** se strikt
 - **ORM & Perzistence**: SQLAlchemy 2.0 (s podporou verzovaných schémat a migrací)
 - **Relační databáze**: PostgreSQL 16 (běžící v kontejneru Docker Compose), SQLite s podporou sdíleného `StaticPool` pro bleskové lokální testování
 - **Validace a typování**: Pydantic v2
-- **Prezentační vrstva (UI)**: Moderní pultový webový dashboard (HTML5, responzivní Vanilla CSS, nativní JavaScript)
-- **Vizuální styl**: Čistý, minimalistický design bez jakýchkoliv ikonek a emoji – rozhraní sází na jasnou textovou hierarchii, čistou typografii a barevné stavové indikátory pro maximální přehlednost na pultu.
-- **Motivy rozhraní**: Plná podpora přepínání mezi **Dark módem** a **Light módem** s okamžitou perzistencí uživatelské volby v `localStorage`.
+- **Prezentační vrstva (UI)**: Pultový webový dashboard (HTML5, responzivní Vanilla CSS, nativní JavaScript)
+- **Vizuální styl – Frutiger Aero**: Ikonická estetika přelomu let 2004–2012 (Windows Aero / Aqua / Skeuomorfismus), která dokonale souzní se zadáním „Hory a voda“:
+  - **Aero Glass & Specular Gloss**: Karty inventáře, filtry i tabulky s efektem matného skla (`backdrop-filter: blur(18px)`), bílými lesklými odlesky a vícesložkovými vnitřními stíny.
+  - **3D Jelly tlačítka**: Lesklá tlačítka s horním specular odleskem, přechodovými gradienty a hmatatelnou odezvou na stisknutí.
+  - **Kapslové odznaky (Pill Badges)**: Statusy inventáře v podobě lesklých skleněných kapslí (smaragd pro volné kusy, azur pro výpůjčky, jantar pro servis).
+  - **Přírodní & vodní ambient**: Jemné plovoucí bubliny na pozadí, sluneční odlesky a organické barevné přechody.
+- **Motivy rozhraní**: Plná podpora přepínání mezi **Dark módem** (hluboká půlnoční modř s bioluminiscencí) a **Light módem** (slunné azurové nebe a svěží louka) s okamžitou perzistencí uživatelské volby v `localStorage`.
 - **Testovací framework**: `pytest` + `httpx` (unit testy byznys služeb a integrační testy REST API)
 - **Kontejnerizace**: Docker & Docker Compose
 
@@ -255,6 +259,12 @@ python -m pytest -v
 ## 9. Záznamy o postupu a změnách (Changelog & Technical Log)
 
 - **2026-11-04**:
+  - **Redesign uživatelského rozhraní do stylu Frutiger Aero**:
+    - Kompletní transformace CSS design systému na estetiku **Frutiger Aero** (skleněný lesk, frosted glass, 3D jelly tlačítka, plovoucí vodní bubliny a sluneční záře na pozadí).
+    - Implementace **Frutiger Aero Light** (azurové nebe, tyrkysová voda a svěží zelené akcenty) a **Frutiger Aero Dark** (hluboká půlnoční oceánská modř s polární září).
+    - Zavedení skleněných kapslových odznaků s horními zrcadlovými odlesky pro stavy inventáře na ranním pultu.
+    - Úprava tlačítek v modálních oknech: zavedení kulatého tlačítka s křížkem pro zrušení (`.btn-cancel-round`) a přesné výškové sjednocení na 42 px s hlavním akčním tlačítkem.
+    - Zavedení cache-busting verzování assetů (`?v=4`) pro okamžité promítnutí nového vizuálu v prohlížeči.
   - **Zrobustnění lokálního spouštění a správy závislostí**:
     - Aktualizace skriptů `run.bat` a `run.sh` o automatickou detekci existence virtuálního prostředí `.venv`, jeho případné vytvoření a instalaci `requirements.txt`.
     - Vyřešení chyby `No module named uvicorn` způsobené během mimo aktivované virtuální prostředí.
