@@ -258,6 +258,19 @@ python -m pytest -v
 
 ## 9. Záznamy o postupu a změnách (Changelog & Technical Log)
 
+- **2026-11-18**:
+  - **Úprava hlavičky pultového dashboardu a zjednodušení akcí**:
+    - Aktualizace textace v hlavičce dashboardu dle zadání.
+    - Odstranění navigačního tlačítka pro Swagger API z horní lišty pultu pro zjednodušení uživatelského rozhraní (REST API dokumentace zůstává dostupná na adrese `/docs`).
+  - **Korekce specular gloss efektu na tlačítkách, odznacích inventáře a dostupnosti**:
+    - Oprava roztažení lesklého odlesku na tlačítkách (`.btn::before`, `.btn-cancel-round::before`) – odstraněno zúžení (`left: 8%`/`12%`), efekt je nyní plynule roztažen po celé šířce horní části tlačítka od okraje k okraji (`left: 0; right: 0; border-radius: var(--radius-pill) var(--radius-pill) 0 0`).
+    - Oprava roztažení lesklého odlesku u inventárních čísel a dostupnosti/stavů (`.badge::before`, `.toast::before`) – odstraněno boční zúžení (`left: 6%`/`8%`) a nevhodné oválné poloměry, odlesk se nyní adaptivně roztahuje po celé šířce odznaku s děděním poloměru horních rohů (`border-top-left-radius: inherit; border-top-right-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;`).
+  - **Redesign dropdown menu do Frutiger Aero a čitelnost v tmavém režimu**:
+    - Stylování všech výběrových nabídek (`.select-custom`, `select.form-control`) v čistém skleněném Frutiger Aero stylu: náhrada systémové šipky za SVG chevron (azurově modrý v tmavém režimu, tmavě modrý ve světlém), sjednocení výšky na 42 px, skleněné gradienty a světelný glow efekt při focusu.
+    - Vyřešena čitelnost rozevíracích položek (`select option`): v tmavém režimu explicitní tmavě modré pozadí oceánu (`#06233a`) s vysokým kontrastem textu (`#e0f4ff`), ve světlém režimu čistě bílé pozadí s tmavým písmem.
+    - Zavedena globální vlastnost `color-scheme: dark / light` pro korektní vykreslování nativních ovládacích prvků prohlížeče a operačního systému.
+    - Zvýšení verze statických stylů na `?v=5` pro eliminaci klientské mezipaměti prohlížeče.
+
 - **2026-11-04**:
   - **Redesign uživatelského rozhraní do stylu Frutiger Aero**:
     - Kompletní transformace CSS design systému na estetiku **Frutiger Aero** (skleněný lesk, frosted glass, 3D jelly tlačítka, plovoucí vodní bubliny a sluneční záře na pozadí).
